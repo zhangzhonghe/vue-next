@@ -29,7 +29,9 @@ import {
   onRenderTracked,
   onBeforeUnmount,
   onUnmounted,
+  onBeforeActivate,
   onActivated,
+  onBeforeDeactivate,
   onDeactivated,
   onRenderTriggered,
   DebuggerHook,
@@ -314,7 +316,9 @@ interface LegacyOptions<
   mounted?(): void
   beforeUpdate?(): void
   updated?(): void
+  beforeActivate?(): void
   activated?(): void
+  beforeDeactivate?(): void
   deactivated?(): void
   beforeUnmount?(): void
   unmounted?(): void
@@ -386,7 +390,9 @@ export function applyOptions(
     mounted,
     beforeUpdate,
     updated,
+    beforeActivate,
     activated,
+    beforeDeactivate,
     deactivated,
     beforeUnmount,
     unmounted,
@@ -591,8 +597,14 @@ export function applyOptions(
   if (updated) {
     onUpdated(updated.bind(publicThis))
   }
+  if (beforeActivate) {
+    onBeforeActivate(beforeActivate.bind(publicThis))
+  }
   if (activated) {
     onActivated(activated.bind(publicThis))
+  }
+  if (beforeDeactivate) {
+    onBeforeDeactivate(beforeDeactivate.bind(publicThis))
   }
   if (deactivated) {
     onDeactivated(deactivated.bind(publicThis))

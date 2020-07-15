@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <keep-alive>
+            <one v-if="toggle"></one>
+            <two v-else></two>
+        </keep-alive>
+    </div>
+    <script src="./vue/dist/vue.global.js"></script>
+    <script>
+        const { createApp, ref } = Vue
+        const one = {
+            name: 'one',
+            template: 'one',
+            beforeActivate() {
+                console.log('beforeActivate')
+            },
+            activated() {
+                console.log('activated')
+            },
+            beforeDeactivate() {
+                console.log('beforeDeactivate')
+            },
+            deactivated() {
+                console.log('deactivated')
+            }
+        }
+        const two = {
+            name: 'two',
+            template: 'two'
+        }
+
+        const toggle = ref(true)
+
+        const app = createApp({
+            data() {
+                return {
+                    toggle
+                }
+            },
+            components: {
+                One: one,
+                Two: two
+            }
+        })
+        app.mount('#app')
+    </script>
+</body>
+</html>

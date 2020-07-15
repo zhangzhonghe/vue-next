@@ -104,6 +104,9 @@ const KeepAliveImpl = {
 
     sharedContext.activate = (vnode, container, anchor, isSVG, optimized) => {
       const instance = vnode.component!
+      if (instance.ba) {
+        invokeArrayFns(instance.ba)
+      }
       move(vnode, container, anchor, MoveType.ENTER, parentSuspense)
       // in case props have changed
       patch(
@@ -130,6 +133,9 @@ const KeepAliveImpl = {
 
     sharedContext.deactivate = (vnode: VNode) => {
       const instance = vnode.component!
+      if (instance.bda) {
+        invokeArrayFns(instance.bda)
+      }
       move(vnode, storageContainer, null, MoveType.LEAVE, parentSuspense)
       queuePostRenderEffect(() => {
         if (instance.da) {
@@ -305,11 +311,25 @@ function matches(pattern: MatchPattern, name: string): boolean {
   return false
 }
 
+export function onBeforeActivate(
+  hook: Function,
+  target?: ComponentInternalInstance | null
+) {
+  registerKeepAliveHook(hook, LifecycleHooks.BEFORE_ACTIVATE, target)
+}
+
 export function onActivated(
   hook: Function,
   target?: ComponentInternalInstance | null
 ) {
   registerKeepAliveHook(hook, LifecycleHooks.ACTIVATED, target)
+}
+
+export function onBeforeDeactivate(
+  hook: Function,
+  target?: ComponentInternalInstance | null
+) {
+  registerKeepAliveHook(hook, LifecycleHooks.BEFORE_DEACTIVATE, target)
 }
 
 export function onDeactivated(
